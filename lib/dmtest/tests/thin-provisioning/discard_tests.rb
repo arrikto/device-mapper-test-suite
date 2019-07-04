@@ -833,7 +833,7 @@ class DiscardSlowTests < ThinpTestCase
           ProcessControl.run("sync")
 
           $log.info "used data blocks before: #{PoolStatus.new(pool).used_data_blocks}"
-          ProcessControl.run("fstrim -v #{dir}")
+          fs.trim
           $log.info "used data blocks after: #{PoolStatus.new(pool).used_data_blocks}"
 
           s = PoolStatus.new(pool)

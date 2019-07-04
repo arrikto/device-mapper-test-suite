@@ -19,7 +19,7 @@ module FS
     end
 
     def mount(mount_point, opts = Hash.new)
-      @mount_point = mount_point
+      @mount_point = File.expand_path(mount_point)
       Pathname.new(mount_point).mkpath
       ProcessControl.run(mount_cmd(mount_point, opts))
     end
@@ -39,6 +39,10 @@ module FS
     def check
       ProcessControl.run("echo 1 > /proc/sys/vm/drop_caches");
       ProcessControl.run(check_cmd)
+    end
+
+    def trim
+      ProcessControl.run("fstrim -v #{@mount_point}")
     end
   end
 
