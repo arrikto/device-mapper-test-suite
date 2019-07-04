@@ -176,6 +176,27 @@ module DM
             chunk_size)
     end
   end
+
+  #--------------------------------
+
+  class CloneTarget < Target
+    def initialize(sector_count, metadata_dev, dest_dev, source_dev,
+                   region_size, hydration=true, discard_passdown=true,
+                   core_args = {})
+      feature_args = Array.new
+
+      feature_args.instance_eval do
+        push :no_discard_passdown unless discard_passdown
+        push :no_hydration unless hydration
+      end
+
+      _core_args = core_args.map {|k, v| [k.to_s] + [v.to_s]}
+
+      super('clone', sector_count, metadata_dev, dest_dev, source_dev,
+            region_size, feature_args.length, *feature_args,
+            core_args.length * 2, *_core_args)
+    end
+  end
 end
 
 #----------------------------------------------------------------
